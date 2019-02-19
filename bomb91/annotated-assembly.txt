@@ -1,14 +1,28 @@
+0000000000400e2d <phase_1>:
+  400e2d:       48 83 ec 08             sub    $0x8,%rsp
+  400e31:       be f0 22 40 00          mov    $0x4022f0,%esi			#Solution is stored in $esi
+  400e36:       e8 a9 03 00 00          callq  4011e4 <strings_not_equal>	#Strings are compared
+  400e3b:       85 c0                   test   %eax,%eax
+  400e3d:       74 05                   je     400e44 <phase_1+0x17>
+  400e3f:       e8 77 05 00 00          callq  4013bb <explode_bomb>
+  400e44:       48 83 c4 08             add    $0x8,%rsp
+  400e48:       c3                      retq
+
+0000000000400e49 <phase_2>:
+  400e49:       55                      push   %rbp
+  400e4a:       53                      push   %rbx
+  400e4b:       48 83 ec 28             sub    $0x28,%rsp
   400e4f:       48 89 e6                mov    %rsp,%rsi
-  400e52:       e8 9a 05 00 00          callq  4013f1 <read_six_numbers>
-  400e57:       83 3c 24 01             cmpl   $0x1,(%rsp)
-  400e5b:       74 05                   je     400e62 <phase_2+0x19>
+  400e52:       e8 9a 05 00 00          callq  4013f1 <read_six_numbers>	#Six numbers must be entered
+  400e57:       83 3c 24 01             cmpl   $0x1,(%rsp)			#Checks that first entry is 1
+  400e5b:       74 05                   je     400e62 <phase_2+0x19>		#Jumps the bomb
   400e5d:       e8 59 05 00 00          callq  4013bb <explode_bomb>
-  400e62:       48 89 e3                mov    %rsp,%rbx
+  400e62:       48 89 e3                mov    %rsp,%rbx			
   400e65:       48 8d 6c 24 14          lea    0x14(%rsp),%rbp
   400e6a:       8b 03                   mov    (%rbx),%eax
-  400e6c:       01 c0                   add    %eax,%eax
-  400e6e:       39 43 04                cmp    %eax,0x4(%rbx)
-  400e71:       74 05                   je     400e78 <phase_2+0x2f>
+  400e6c:       01 c0                   add    %eax,%eax			#eax gets doubled starting from 1
+  400e6e:       39 43 04                cmp    %eax,0x4(%rbx)			#p/d *(int *)($rbx+0x4) gives entry
+  400e71:       74 05                   je     400e78 <phase_2+0x2f>		#If they match, jump explode_bomb
   400e73:       e8 43 05 00 00          callq  4013bb <explode_bomb>
   400e78:       48 83 c3 04             add    $0x4,%rbx
   400e7c:       48 39 eb                cmp    %rbp,%rbx
@@ -21,5 +35,179 @@
 0000000000400e88 <phase_3>:
   400e88:       48 83 ec 18             sub    $0x18,%rsp
   400e8c:       48 8d 4c 24 08          lea    0x8(%rsp),%rcx
-                                                              344,37-45     19%
+  400e91:       48 8d 54 24 0c          lea    0xc(%rsp),%rdx
+  400e96:       be a3 25 40 00          mov    $0x4025a3,%esi
+  400e9b:       b8 00 00 00 00          mov    $0x0,%eax
+  400ea0:       e8 ab fc ff ff          callq  400b50 <__isoc99_sscanf@plt>	#stepi into here, get %d, %d
+  400ea5:       83 f8 01                cmp    $0x1,%eax			#Comparing first entry to 1
+  400ea8:       7f 05                   jg     400eaf <phase_3+0x27>
+  400eaa:       e8 0c 05 00 00          callq  4013bb <explode_bomb>
+  400eaf:       83 7c 24 0c 07          cmpl   $0x7,0xc(%rsp)
+  400eb4:       77 3c                   ja     400ef2 <phase_3+0x6a>
+  400eb6:       8b 44 24 0c             mov    0xc(%rsp),%eax
+  400eba:       ff 24 c5 60 23 40 00    jmpq   *0x402360(,%rax,8)
+  400ec1:       b8 54 03 00 00          mov    $0x354,%eax
+  400ec6:       eb 3b                   jmp    400f03 <phase_3+0x7b>
+  400ec8:       b8 91 02 00 00          mov    $0x291,%eax
+  400ecd:       eb 34                   jmp    400f03 <phase_3+0x7b>
+  400ecf:       b8 79 01 00 00          mov    $0x179,%eax
+  400ed4:       eb 2d                   jmp    400f03 <phase_3+0x7b>
+  400ed6:       b8 d1 00 00 00          mov    $0xd1,%eax
+  400edb:       eb 26                   jmp    400f03 <phase_3+0x7b>
+  400edd:       b8 bc 02 00 00          mov    $0x2bc,%eax
+  400ee2:       eb 1f                   jmp    400f03 <phase_3+0x7b>
+  400ee4:       b8 ab 01 00 00          mov    $0x1ab,%eax
+  400ee9:       eb 18                   jmp    400f03 <phase_3+0x7b>
+  400eeb:       b8 af 01 00 00          mov    $0x1af,%eax
+  400ef0:       eb 11                   jmp    400f03 <phase_3+0x7b>
+  400ef2:       e8 c4 04 00 00          callq  4013bb <explode_bomb>
+  400ef7:       b8 00 00 00 00          mov    $0x0,%eax
+  400efc:       eb 05                   jmp    400f03 <phase_3+0x7b>
+  400efe:       b8 4e 00 00 00          mov    $0x4e,%eax
+  400f03:       3b 44 24 08             cmp    0x8(%rsp),%eax			#Notice eax holds 2nd number (852)
+  400f07:       74 05                   je     400f0e <phase_3+0x86>		#p/x *(int *)($rsp+0x8) to get entry
+  400f09:       e8 ad 04 00 00          callq  4013bb <explode_bomb>
+  400f0e:       48 83 c4 18             add    $0x18,%rsp
+  400f12:       c3                      retq
+
+0000000000400f13 <func4>:
+  400f13:       53                      push   %rbx
+  400f14:       89 d3                   mov    %edx,%ebx
+  400f16:       29 f3                   sub    %esi,%ebx
+  400f18:       d1 eb                   shr    %ebx
+  400f1a:       01 f3                   add    %esi,%ebx
+  400f1c:       39 fb                   cmp    %edi,%ebx
+  400f1e:       76 0c                   jbe    400f2c <func4+0x19>
+  400f20:       8d 53 ff                lea    -0x1(%rbx),%edx
+  400f23:       e8 eb ff ff ff          callq  400f13 <func4>
+  400f28:       01 d8                   add    %ebx,%eax
+  400f2a:       eb 10                   jmp    400f3c <func4+0x29>
+  400f2c:       89 d8                   mov    %ebx,%eax
+  400f2e:       39 fb                   cmp    %edi,%ebx
+  400f30:       73 0a                   jae    400f3c <func4+0x29>
+  400f32:       8d 73 01                lea    0x1(%rbx),%esi
+  400f35:       e8 d9 ff ff ff          callq  400f13 <func4>
+  400f3a:       01 d8                   add    %ebx,%eax
+  400f3c:       5b                      pop    %rbx
+  400f3d:       c3                      retq
+
+0000000000400f3e <phase_4>:
+  400f3e:       48 83 ec 18             sub    $0x18,%rsp
+  400f42:       48 8d 4c 24 08          lea    0x8(%rsp),%rcx
+  400f47:       48 8d 54 24 0c          lea    0xc(%rsp),%rdx
+  400f4c:       be a3 25 40 00          mov    $0x4025a3,%esi
+  400f51:       b8 00 00 00 00          mov    $0x0,%eax
+  400f56:       e8 f5 fb ff ff          callq  400b50 <__isoc99_sscanf@plt>
+  400f5b:       83 f8 02                cmp    $0x2,%eax			#Looking for 2 entries
+  400f5e:       75 07                   jne    400f67 <phase_4+0x29>
+  400f60:       83 7c 24 0c 0e          cmpl   $0xe,0xc(%rsp)
+  400f65:       76 05                   jbe    400f6c <phase_4+0x2e>
+  400f67:       e8 4f 04 00 00          callq  4013bb <explode_bomb>
+  400f6c:       ba 0e 00 00 00          mov    $0xe,%edx			#Loads 14 into edx
+  400f71:       be 00 00 00 00          mov    $0x0,%esi			#Loads 0 into esi
+  400f76:       8b 7c 24 0c             mov    0xc(%rsp),%edi			#Moves entry into edi
+  400f7a:       e8 94 ff ff ff          callq  400f13 <func4>			#Calls func4
+  400f7f:       83 f8 0b                cmp    $0xb,%eax			#Want 11 to be returned
+  400f82:       75 07                   jne    400f8b <phase_4+0x4d>
+  400f84:       83 7c 24 08 0b          cmpl   $0xb,0x8(%rsp)			#Here entry 2 compared to 11
+  400f89:       74 05                   je     400f90 <phase_4+0x52>
+  400f8b:       e8 2b 04 00 00          callq  4013bb <explode_bomb>
+  400f90:       48 83 c4 18             add    $0x18,%rsp
+  400f94:       c3                      retq
+
+0000000000400f95 <phase_5>:
+  400f95:       53                      push   %rbx
+  400f96:       48 89 fb                mov    %rdi,%rbx
+  400f99:       e8 28 02 00 00          callq  4011c6 <string_length>
+  400f9e:       83 f8 06                cmp    $0x6,%eax			#String length of 6
+  400fa1:       74 05                   je     400fa8 <phase_5+0x13>
+  400fa3:       e8 13 04 00 00          callq  4013bb <explode_bomb>
+  400fa8:       48 89 d8                mov    %rbx,%rax
+  400fab:       48 8d 7b 06             lea    0x6(%rbx),%rdi
+  400faf:       b9 00 00 00 00          mov    $0x0,%ecx
+  400fb4:       0f b6 10                movzbl (%rax),%edx			#edx is storing entry char
+  400fb7:       83 e2 0f                and    $0xf,%edx
+  400fba:       03 0c 95 a0 23 40 00    add    0x4023a0(,%rdx,4),%ecx		#ecx is storing total
+  400fc1:       48 83 c0 01             add    $0x1,%rax			#Increment loop
+  400fc5:       48 39 f8                cmp    %rdi,%rax			#Loop condition check
+  400fc8:       75 ea                   jne    400fb4 <phase_5+0x1f>
+  400fca:       83 f9 39                cmp    $0x39,%ecx			#Compare total to 57
+  400fcd:       74 05                   je     400fd4 <phase_5+0x3f>
+  400fcf:       e8 e7 03 00 00          callq  4013bb <explode_bomb>
+  400fd4:       5b                      pop    %rbx
+  400fd5:       c3                      retq
+
+0000000000400fd6 <phase_6>:
+  400fd6:       41 55                   push   %r13
+  400fd8:       41 54                   push   %r12
+  400fda:       55                      push   %rbp
+  400fdb:       53                      push   %rbx
+  400fdc:       48 83 ec 58             sub    $0x58,%rsp
+  400fe0:       48 8d 74 24 30          lea    0x30(%rsp),%rsi
+  400fe5:       e8 07 04 00 00          callq  4013f1 <read_six_numbers>	#Reading in 6 numbers
+  400fea:       4c 8d 64 24 30          lea    0x30(%rsp),%r12
+  400fef:       41 bd 00 00 00 00       mov    $0x0,%r13d
+  400ff5:       4c 89 e5                mov    %r12,%rbp                	#Start of first loop
+  400ff8:       41 8b 04 24             mov    (%r12),%eax              	#Grabs next entry stored in eax
+  400ffc:       83 e8 01                sub    $0x1,%eax                	#Subtracts 1 from eax
+  400fff:       83 f8 05                cmp    $0x5,%eax                	#Checks that entry is <= 6
+  401002:       76 05                   jbe    401009 <phase_6+0x33>    	
+  401004:       e8 b2 03 00 00          callq  4013bb <explode_bomb>
+  401009:       41 83 c5 01             add    $0x1,%r13d               	#2nd iteration 1+1=2, 3rd = 1+2=3
+  40100d:       41 83 fd 06             cmp    $0x6,%r13d               	#r13d tracking outside loop < 6
+  401011:       74 3d                   je     401050 <phase_6+0x7a>
+  401013:       44 89 eb                mov    %r13d,%ebx               	#Stores the next entry in ebx
+  401016:       48 63 c3                movslq %ebx,%rax                        #Start of a loop, puts prev entry into rax
+  401019:       8b 44 84 30             mov    0x30(%rsp,%rax,4),%eax   	#Grabs the next entry, stores it in $eax
+  40101d:       39 45 00                cmp    %eax,0x0(%rbp)           	#Comparing $eax to byte 0 of $rbp = 0x1,0x2
+  401020:       75 05                   jne    401027 <phase_6+0x51>
+  401022:       e8 94 03 00 00          callq  4013bb <explode_bomb>
+  401027:       83 c3 01                add    $0x1,%ebx                	#Increments loop by 1
+  40102a:       83 fb 05                cmp    $0x5,%ebx                	#Checks loop condition (Runs 6 times)
+  40102d:       7e e7                   jle    401016 <phase_6+0x40>            #End of the loop
+  40102f:       49 83 c4 04             add    $0x4,%r12
+  401033:       eb c0                   jmp    400ff5 <phase_6+0x1f>            #End of the outer loop
+  401035:       48 8b 52 08             mov    0x8(%rdx),%rdx                   #Start of next loop
+  401039:       83 c0 01                add    $0x1,%eax
+  40103c:       39 c8                   cmp    %ecx,%eax
+  40103e:       75 f5                   jne    401035 <phase_6+0x5f>
+  401040:       48 89 14 74             mov    %rdx,(%rsp,%rsi,2)               #Start of another loop
+  401044:       48 83 c6 04             add    $0x4,%rsi                	#rsi incremented by 4
+  401048:       48 83 fe 18             cmp    $0x18,%rsi               	#incremented by 4, 6 x 4 = 24 = 0x18
+  40104c:       75 07                   jne    401055 <phase_6+0x7f>
+  40104e:       eb 1a                   jmp    40106a <phase_6+0x94>
+  401050:       be 00 00 00 00          mov    $0x0,%esi                	#Once the big loop is done, land here
+  401055:       8b 4c 34 30             mov    0x30(%rsp,%rsi,1),%ecx   	#loading the next entry into ecx
+  401059:       b8 01 00 00 00          mov    $0x1,%eax
+  40105e:       ba e0 32 60 00          mov    $0x6032e0,%edx           	#Moves a address into edx
+  401063:       83 f9 01                cmp    $0x1,%ecx                	#Jump outside of the loop if ecx is not 1
+  401066:       7f cd                   jg     401035 <phase_6+0x5f>
+  401068:       eb d6                   jmp    401040 <phase_6+0x6a>            #End of loop
+  40106a:       48 8b 1c 24             mov    (%rsp),%rbx
+  40106e:       48 89 e0                mov    %rsp,%rax
+  401071:       48 8d 74 24 28          lea    0x28(%rsp),%rsi
+  401076:       48 89 d9                mov    %rbx,%rcx
+  401079:       48 8b 50 08             mov    0x8(%rax),%rdx			#rdx is where nodes are stored
+  40107d:       48 89 51 08             mov    %rdx,0x8(%rcx)
+  401081:       48 83 c0 08             add    $0x8,%rax
+  401085:       48 89 d1                mov    %rdx,%rcx
+  401088:       48 39 f0                cmp    %rsi,%rax
+  40108b:       75 ec                   jne    401079 <phase_6+0xa3>
+  40108d:       48 c7 42 08 00 00 00    movq   $0x0,0x8(%rdx)
+  401094:       00
+  401095:       bd 05 00 00 00          mov    $0x5,%ebp
+  40109a:       48 8b 43 08             mov    0x8(%rbx),%rax			#rbx is the desired node value
+  40109e:       8b 00                   mov    (%rax),%eax			#eax is the next entry
+  4010a0:       39 03                   cmp    %eax,(%rbx)			#Jump if less than desired node value
+  4010a2:       7e 05                   jle    4010a9 <phase_6+0xd3>		#This is the comparasion
+  4010a4:       e8 12 03 00 00          callq  4013bb <explode_bomb>
+  4010a9:       48 8b 5b 08             mov    0x8(%rbx),%rbx			#Examining how rbx changes
+  4010ad:       83 ed 01                sub    $0x1,%ebp
+  4010b0:       75 e8                   jne    40109a <phase_6+0xc4>
+  4010b2:       48 83 c4 58             add    $0x58,%rsp
+  4010b6:       5b                      pop    %rbx
+  4010b7:       5d                      pop    %rbp
+  4010b8:       41 5c                   pop    %r12
+  4010ba:       41 5d                   pop    %r13
+  4010bc:       c3                      retq
 
